@@ -50,6 +50,11 @@
             android:screenOrientation="portrait">
         </activity>
         <activity
+            android:name=".MainTabActivity"
+            android:label="@string/title_activity_main"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
             android:name=".CalendarActivity"
             android:label="@string/title_activity_calendar"
             android:screenOrientation="portrait" >

@@ -99,6 +99,17 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
                     break;
                 case "February": holder.mImageView.setImageResource(R.drawable.february);
                     break;
+                case "March": holder.mImageView.setImageResource(R.drawable.march);
+                    break;
+                case "April": holder.mImageView.setImageResource(R.drawable.april);
+                    break;
+                case "May": holder.mImageView.setImageResource(R.drawable.may);
+                    break;
+                case "June": holder.mImageView.setImageResource(R.drawable.june);
+                    break;
+                case "July": holder.mImageView.setImageResource(R.drawable.july);
+                    break;
+
             }
 
 

@@ -6,20 +6,16 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.ContextMenu;
+import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.widget.AdapterView;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.TabHost;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class MainActivity extends TabActivity {
 
@@ -103,10 +99,10 @@ public class MainActivity extends TabActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
-        Toast.makeText(this, "Test", Toast.LENGTH_LONG).show();
         MenuInflater inflater = getMenuInflater();
+
         inflater.inflate(R.menu.menu_main, menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
