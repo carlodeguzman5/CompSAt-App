@@ -68,7 +68,7 @@ public class LoginActivity extends Activity {
         login = (Button) findViewById(R.id.button);
         cb = (CheckBox) findViewById(R.id.remember);
 
-        Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/FuturaLT.ttf");
+        Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/OpenSans-Regular.ttf");
         usernameField.setTypeface(tf);
         passwordField.setTypeface(tf);
         login.setTypeface(tf);
@@ -101,7 +101,7 @@ public class LoginActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        //getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -139,8 +139,8 @@ public class LoginActivity extends Activity {
     }
 
     public void register(View view){
-        Intent intent = new Intent(this, WebsiteActivity.class);
-        intent.putExtra("url", "http://app.compsat.org");
+        Intent intent = new Intent(this, CreateAccountActivity.class);
+        //intent.putExtra("url", "http://app.compsat.org");
         startActivity(intent);
     }
 

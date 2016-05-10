@@ -1,23 +1,22 @@
 package org.app.compsat.compsatapplication;
 
-import android.support.v7.app.ActionBarActivity;
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.webkit.WebView;
 
 
-public class WebsiteActivity extends ActionBarActivity{
+public class WebsiteActivity extends Activity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_web);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        WebView webview = new WebView(this);
-        setContentView(webview);
-
+        WebView webview = (WebView) findViewById(R.id.webView);
         webview.loadUrl(getIntent().getExtras().getString("url"));
         webview.getSettings().setLoadWithOverviewMode(true);
         webview.getSettings().setUseWideViewPort(true);
@@ -43,5 +42,9 @@ public class WebsiteActivity extends ActionBarActivity{
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void back(View view){
+        onBackPressed();
     }
 }

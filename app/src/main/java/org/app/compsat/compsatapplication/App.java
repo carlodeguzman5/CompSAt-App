@@ -16,9 +16,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        //Parse.enableLocalDatastore(this);
         Parse.initialize(this, "THz1fv3xfay1bnVKgWUUfyIL6e0pcjfFX9aisSSL", "qzkzqY1H6duTFrsRI2c1nlgXittF33CsPg0r525X");
-        //ParsePush.subscribeInBackground("CompSAtApplication");
         ParseInstallation.getCurrentInstallation().saveInBackground();
     }
 

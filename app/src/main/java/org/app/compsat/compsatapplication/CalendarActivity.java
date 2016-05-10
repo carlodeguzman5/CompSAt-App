@@ -1,11 +1,9 @@
 package org.app.compsat.compsatapplication;
 
 import android.app.Activity;
-import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -16,12 +14,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
-
-import org.apache.http.NameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -29,31 +23,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Scanner;
 
 
 public class CalendarActivity extends Activity implements SwipeRefreshLayout.OnRefreshListener{
     private Activity context = this;
-    private ArrayList<HashMap<String, String>> eventsList;
-    private JSONParser jParser = new JSONParser();
     private SwipeRefreshLayout swipeRefreshLayout;
-
-    // url to get all calandar_events
-    private static final String TAG_CALENDAR = "calendar";
-    private static final String TAG_DAY = "day";
-    private static final String TAG_MONTH = "month";
-    private static final String TAG_YEAR = "year";
-    private static final String TAG_EVENT = "event";
     private ProgressDialog pDialog;
 
-    // events JSONArray
-    private JSONArray events;
+    private JSONArray eventsJson;
     private JSONArray monthsJson;
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private MyRecyclerAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
 
@@ -75,6 +56,12 @@ public class CalendarActivity extends Activity implements SwipeRefreshLayout.OnR
 
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout2);
         swipeRefreshLayout.setOnRefreshListener(this);
+
+        monthsJson = new JSONArray();
+        eventsJson = new JSONArray();
+
+        mAdapter = new MyRecyclerAdapter(context ,monthsJson, eventsJson);
+        mRecyclerView.setAdapter(mAdapter);
 
         new LoadAllEvents().execute();
     }
@@ -125,95 +112,61 @@ public class CalendarActivity extends Activity implements SwipeRefreshLayout.OnR
          */
         protected String doInBackground(String... args) {
 
-            InputStream is = null;
+            /*InputStream is = null;
             try {
                 is = getBaseContext().getAssets().open("db/db.properties");
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Scanner scanner = new Scanner(is);
+            Scanner scanner = new Scanner(is);*/
 
-            String url = "http://app.compsat.org/index.php/Calendar_controller/calendar/format/json";
-            String monthUrl = "http://app.compsat.org/index.php/Calendar_controller/months/format/json";
+            String eventsUrl = "http://app.compsat.org/index.php/Calendar_controller/calendar/format/json";
+            String monthsUrl = "http://app.compsat.org/index.php/Calendar_controller/months/format/json";
 
-
-            // Hashmap for ListView
-            eventsList = new ArrayList<HashMap<String, String>>();
-
-
-            List<NameValuePair> params = new ArrayList<NameValuePair>();
-            // getting JSON string from URL
-            JSONArray json = null;
 
             ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo activeNetworkInfo = cm.getActiveNetworkInfo();
 
-
             if(activeNetworkInfo != null && activeNetworkInfo.isConnected()){
-                // getting JSON string from URL
-                json = jParser.makeHttpRequest(url, "POST", params);
-                monthsJson = jParser.makeHttpRequest(monthUrl, "POST", params);
-                writeToFile("calendar.txt", json.toString());
-                writeToFile("months.txt", monthsJson.toString());
+
+                RestClient eventsClient = new RestClient(eventsUrl);
+                RestClient monthsClient = new RestClient(monthsUrl);
+
+                eventsClient.execute();
+                monthsClient.execute();
+
+                if(eventsClient.getStatusCode() == 200 && monthsClient.getStatusCode() == 200){
+                    eventsJson = eventsClient.getResponse();
+                    monthsJson = monthsClient.getResponse();
+                    writeToFile("calendar.txt", eventsJson.toString());
+                    writeToFile("months.txt", monthsJson.toString());
+                }
+                else{
+                    try {
+                        eventsJson = new JSONArray(readFromFile("calendar.txt"));
+                        monthsJson = new JSONArray(readFromFile("months.txt"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
             else{
                 try {
-                    json = new JSONArray(readFromFile("calendar.txt"));
+                    eventsJson = new JSONArray(readFromFile("calendar.txt"));
                     monthsJson = new JSONArray(readFromFile("months.txt"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
 
-
-            try {
-                // Getting Array of Contacts
-                events = json;
-
-
-                // looping through All Events
-                for (int i = 0; i < events.length(); i++) {
-                    JSONObject c = events.getJSONObject(i);
-
-                    // Storing each json item in variable
-                    String event = c.getString(TAG_EVENT);
-                    String day = c.getString(TAG_DAY);
-                    String month = c.getString(TAG_MONTH);
-                    String year = c.getString(TAG_YEAR);
-
-                    // creating new HashMap
-                    HashMap<String, String> map = new HashMap<String, String>();
-
-                    // adding each child node to HashMap key => value
-                    map.put(TAG_EVENT, event);
-                    map.put(TAG_DAY, day);
-                    map.put(TAG_MONTH, month);
-                    map.put(TAG_YEAR, year);
-
-                    // adding HashList to ArrayList
-                    eventsList.add(map);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
             return null;
         }
-            // updating UI from Background Thread
-
-            /**
-             * After completing background task Dismiss the progress dialog
-             * **/
 
         protected void onPostExecute(String file_url) {
-            // updating UI from Background Thread
             runOnUiThread(new Runnable() {
                 public void run() {
-                    /**
-                     * Updating parsed JSON data into ListView
-                     * */
-                    mAdapter = new MyRecyclerAdapter(context ,monthsJson, events);
-                    mRecyclerView.setAdapter(mAdapter);
-
+                    mAdapter.updateData(eventsJson,monthsJson);
+                    mAdapter.notifyDataSetChanged();
                     pDialog.dismiss();
                     swipeRefreshLayout.setRefreshing(false);
                 }

@@ -77,14 +77,13 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         try {
-            JSONObject tempArray = new JSONObject(months.getString(position));
-            //JSONObject tempArray2 = new JSONObj(events.toString());
+            JSONObject currentMonthObect = new JSONObject(months.getString(position));
 
-            holder.mTextView.setText(tempArray.get("month").toString().toUpperCase());
+            holder.mTextView.setText(currentMonthObect.get("month").toString().toUpperCase());
             holder.mTextView.setTypeface(tf_opensans_regular);
 
             holder.mImageView.setScaleType(ImageView.ScaleType.FIT_XY);
-            switch (tempArray.get("month").toString()){
+            switch (currentMonthObect.get("month").toString()){
                 case "August": holder.mImageView.setImageResource(R.drawable.august);
                     break;
                 case "September": holder.mImageView.setImageResource(R.drawable.september);
@@ -111,15 +110,13 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
                     break;
 
             }
-
-
             holder.mLinearLayout.removeAllViewsInLayout();
 
             for(int i = 0 ; i < events.length(); i++){
-                JSONObject tempArray2 = new JSONObject(events.get(i).toString());
+                String month = events.getJSONObject(i).getString("month");
 
-                if(!tempArray2.get("month").toString().equals(tempArray.get("month").toString())){
-                }
+                if(!currentMonthObect.get("month").toString().equals(month)){}
+
                 else{
 
                     View view = context.getLayoutInflater().inflate(R.layout.event_list_item, null);
@@ -129,8 +126,8 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
                     event_text.setTypeface(tf_opensans_light);
                     day_text.setTypeface(tf_opensans_bold);
 
-                    event_text.setText(tempArray2.get("event").toString());
-                    day_text.setText(tempArray2.get("day").toString());
+                    event_text.setText(events.getJSONObject(i).get("event").toString());
+                    day_text.setText(events.getJSONObject(i).get("day").toString());
                     holder.mLinearLayout.addView(view);
                 }
 
@@ -140,9 +137,18 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
         }
     }
 
+
+    public void updateData(JSONArray events, JSONArray months){
+        this.events = events;
+        this.months = months;
+    }
+
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
+        if(months == null){
+            return 0;
+        }
         return months.length();
     }
 }

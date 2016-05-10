@@ -31,8 +31,8 @@ public class MainActivity extends TabActivity {
         Resources resources = getResources();
         TabHost tabHost = getTabHost();
 
-        ImageView menu = (ImageView)findViewById(R.id.menu_button);
-        menu.setImageDrawable(resources.getDrawable(R.drawable.ic_menu));
+        /*ImageView menu = (ImageView)findViewById(R.id.menu_button);
+        menu.setImageDrawable(resources.getDrawable(R.drawable.ic_menu));*/
 
 
 
@@ -111,8 +111,6 @@ public class MainActivity extends TabActivity {
         switch(item.getItemId()) {
             case R.id.logout:
                 logout();
-                break;
-            case R.id.about:
                 break;
         }
         return super.onContextItemSelected(item);

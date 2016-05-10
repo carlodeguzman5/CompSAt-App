@@ -3,7 +3,6 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="package org.app.compsat.compsatapplication.MainActivity"
     tools:ignore="MergeRootFrame"
     android:background="#2ec4b6">
 
@@ -37,7 +36,6 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="textEmailAddress"
         android:hint="ID Number"
         android:textColor="#f3f3f3"
         android:textColorHint="#f3f3f3"
@@ -45,14 +43,15 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="40dp"
         android:layout_marginRight="50dp"
-        android:layout_marginLeft="50dp" />
+        android:layout_marginLeft="50dp"
+        android:paddingRight="20dp"
+        android:inputType="number" />
 
     <EditText
         android:id="@+id/loginpass"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:paddingRight="20px"
-        android:paddingLeft="20px"
+        android:paddingRight="20dp"
         android:ems="10"
         android:inputType="textPassword"
         android:hint="Password"
@@ -107,6 +106,6 @@
         android:onClick="register"
         android:layout_below="@+id/button"
         android:layout_centerHorizontal="true"
-        android:paddingTop="20dp"/>
+        android:paddingTop="20dp" />
 
 </RelativeLayout>
