@@ -42,7 +42,6 @@
             android:textColor="#ff19647e"
             android:textStyle="bold"
             android:textSize="30sp"
-            android:layout_alignTop="@+id/link"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:paddingLeft="5dp"

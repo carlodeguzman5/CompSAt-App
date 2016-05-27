@@ -14,16 +14,18 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import org.app.compsat.compsatapplication.StickyHeaders.DividerDecoration;
+import org.app.compsat.compsatapplication.StickyHeaders.StickyRecyclerHeadersAdapter;
+import org.app.compsat.compsatapplication.StickyHeaders.StickyRecyclerHeadersDecoration;
 import org.json.JSONArray;
 import org.json.JSONException;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.Scanner;
 
 
 public class CalendarActivity extends Activity implements SwipeRefreshLayout.OnRefreshListener{
@@ -36,6 +38,7 @@ public class CalendarActivity extends Activity implements SwipeRefreshLayout.OnR
     private RecyclerView mRecyclerView;
     private MyRecyclerAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+    private StickyRecyclerHeadersDecoration headersDecor;
 
 
 
@@ -43,9 +46,9 @@ public class CalendarActivity extends Activity implements SwipeRefreshLayout.OnR
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.recycler);
-
+        monthsJson = new JSONArray();
+        eventsJson = new JSONArray();
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
-
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
@@ -57,11 +60,19 @@ public class CalendarActivity extends Activity implements SwipeRefreshLayout.OnR
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout2);
         swipeRefreshLayout.setOnRefreshListener(this);
 
-        monthsJson = new JSONArray();
-        eventsJson = new JSONArray();
-
         mAdapter = new MyRecyclerAdapter(context ,monthsJson, eventsJson);
+        mAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override public void onChanged() {
+                headersDecor.invalidateHeaders();
+            }
+        });
         mRecyclerView.setAdapter(mAdapter);
+
+        headersDecor = new StickyRecyclerHeadersDecoration(mAdapter);
+        mRecyclerView.addItemDecoration(headersDecor);
+        // Add decoration for dividers between list items
+        mRecyclerView.addItemDecoration(new DividerDecoration(context));
+
 
         new LoadAllEvents().execute();
     }
@@ -188,7 +199,7 @@ public class CalendarActivity extends Activity implements SwipeRefreshLayout.OnR
             outputStreamWriter.close();
         }
         catch (IOException e) {
-            Log.e("Exception", "File write failed: " + e.toString());
+            Log.e("Exception", "File wri te failed: " + e.toString());
         }
     }
 

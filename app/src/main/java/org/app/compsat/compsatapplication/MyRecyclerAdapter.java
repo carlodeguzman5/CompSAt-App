@@ -3,12 +3,15 @@ package org.app.compsat.compsatapplication;
 import android.app.Activity;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import org.app.compsat.compsatapplication.StickyHeaders.StickyRecyclerHeadersAdapter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,7 +19,7 @@ import org.json.JSONObject;
 /**
  * Created by carlo on 11/1/2015.
  */
-public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.ViewHolder> {
+public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.ViewHolder> implements StickyRecyclerHeadersAdapter{
     private JSONArray months;
     private JSONArray events;
     private Activity context;
@@ -50,6 +53,7 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
         this.events = events;
         this.context = context;
 
+
         tf_futura_bold = Typeface.createFromAsset(context.getAssets(), "fonts/FuturaLT-Bold.ttf");
         tf_futura = Typeface.createFromAsset(context.getAssets(), "fonts/FuturaLT.ttf");
         tf_futura_condensed= Typeface.createFromAsset(context.getAssets(), "fonts/FuturaLT-Condensed.ttf");
@@ -77,13 +81,13 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         try {
-            JSONObject currentMonthObect = new JSONObject(months.getString(position));
+            JSONObject currentMonthObject = new JSONObject(months.getString(position));
 
-            holder.mTextView.setText(currentMonthObect.get("month").toString().toUpperCase());
+            holder.mTextView.setText(currentMonthObject.get("month").toString().toUpperCase());
             holder.mTextView.setTypeface(tf_opensans_regular);
 
             holder.mImageView.setScaleType(ImageView.ScaleType.FIT_XY);
-            switch (currentMonthObect.get("month").toString()){
+            switch (currentMonthObject.get("month").toString()){
                 case "August": holder.mImageView.setImageResource(R.drawable.august);
                     break;
                 case "September": holder.mImageView.setImageResource(R.drawable.september);
@@ -114,10 +118,10 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
 
             for(int i = 0 ; i < events.length(); i++){
                 String month = events.getJSONObject(i).getString("month");
+                String year = events.getJSONObject(i).getString("year");
 
-                if(!currentMonthObect.get("month").toString().equals(month)){}
-
-                else{
+                if(currentMonthObject.get("month").toString().equals(month) &&
+                        currentMonthObject.get("year").toString().equals(year)){
 
                     View view = context.getLayoutInflater().inflate(R.layout.event_list_item, null);
                     TextView event_text = (TextView) view.findViewById(R.id.event_name);
@@ -141,6 +145,34 @@ public class MyRecyclerAdapter extends RecyclerView.Adapter<MyRecyclerAdapter.Vi
     public void updateData(JSONArray events, JSONArray months){
         this.events = events;
         this.months = months;
+        //Log.d("MONTHS",months.toString());
+    }
+
+    @Override
+    public long getHeaderId(int position) {
+        if(months == null){
+            return -1;
+        }
+        try {
+            return Long.parseLong(months.getJSONObject(position).getString("year"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup parent) {
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.view_header, parent, false);
+        // set the view's size, margins, paddings and layout parameters
+        ViewHolder vh = new ViewHolder(v);        return vh;
+    }
+
+    @Override
+    public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, int position) {
+        TextView headerView = (TextView) holder.itemView;
+        headerView.setText(String.valueOf(getHeaderId(position)));
     }
 
     // Return the size of your dataset (invoked by the layout manager)

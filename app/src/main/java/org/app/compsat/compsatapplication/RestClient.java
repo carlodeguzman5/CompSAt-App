@@ -1,35 +1,34 @@
 package org.app.compsat.compsatapplication;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.protocol.HTTP;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Created by carlo on 4/20/2016.
  */
 public class RestClient {
     private JSONObject paramList;
-    private HttpPost httpPost;
+    private HttpURLConnection httpURLConnection;
+    private URL address;
     private JSONArray output;
     private int statusCode;
-    private StatusLine statusLine;
-
     public RestClient(String url){
+
+        try {
+            address = new URL(url);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
         paramList = new JSONObject();
-        httpPost = new HttpPost(url);
     }
 
     public void addParam(String key, String value){
@@ -41,31 +40,49 @@ public class RestClient {
     }
 
     public void execute(){
+
         try {
-            HttpClient client = new DefaultHttpClient();
-            StringEntity se = new StringEntity( paramList.toString());
-            se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
-            httpPost.setEntity(se);
-            HttpResponse response = client.execute(httpPost);
-            statusLine = response.getStatusLine();
-            output =  new JSONArray(EntityUtils.toString(response.getEntity()));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
+            httpURLConnection = (HttpURLConnection) address.openConnection();
+            httpURLConnection.setReadTimeout(10000);
+            httpURLConnection.setConnectTimeout(15000);
+            httpURLConnection.setRequestMethod("POST");
+            httpURLConnection.setDoInput(true);
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+
+            OutputStream os = httpURLConnection.getOutputStream();
+            os.write(paramList.toString().getBytes("UTF-8"));
+            os.flush();
+
+            statusCode = httpURLConnection.getResponseCode();
+
+            /*if(httpURLConnection.getResponseCode() != HttpURLConnection.HTTP_CREATED){
+                throw new RuntimeException("Failed : HTTP error code : "
+                        + httpURLConnection.getResponseCode());
+            }*/
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
+
+            String tempLine;
+            String tempOutput = "";
+            while((tempLine = br.readLine()) != null){
+                tempOutput += tempLine + "\n";
+            }
+
+            output = new JSONArray(tempOutput);
+
+            httpURLConnection.disconnect();
+
+        } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    public int getStatusCode(){
-        return statusLine.getStatusCode();
     }
 
     public JSONArray getResponse(){
         return output;
     }
 
+    public int getStatusCode() {
+        return statusCode;
+    }
 }

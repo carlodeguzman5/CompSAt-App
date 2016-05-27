@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "1058631919049",
+    "firebase_url": "https://compsat-app-10101.firebaseio.com",
+    "project_id": "compsat-app-10101",
+    "storage_bucket": "compsat-app-10101.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1058631919049:android:81a32111c2a33123",
+        "android_client_info": {
+          "package_name": "org.app.compsat.compsatapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1058631919049-9l3phjjc0u5km4sa4u26gnellaurjq9r.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "1058631919049-kpr78t6hbhjrrfdjbf8k21n9vjbhv3nu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSbGOv-I6dPcrZaOtJkG6k8__BIGwA7O8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

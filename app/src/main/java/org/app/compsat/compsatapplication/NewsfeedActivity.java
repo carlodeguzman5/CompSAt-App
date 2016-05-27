@@ -28,20 +28,12 @@ import java.util.List;
 
 public class NewsfeedActivity extends ListActivity implements SwipeRefreshLayout.OnRefreshListener{
 
-    ArrayList<HashMap<String, String>> notifsList;
-    SwipeRefreshLayout swipeRefreshLayout;
 
-    JSONParser jParser = new JSONParser();
-
-    private static final String TAG_NOTIFICATIONS = "";
-    private static final String TAG_TITLE = "title";
-    private static final String TAG_MESSAGE = "message";
-    private static final String TAG_DATE = "news_date";
-
+    private SwipeRefreshLayout swipeRefreshLayout;
     private ProgressDialog pDialog;
 
     // events JSONArray
-    JSONArray notifications = null;
+    JSONArray newsfeedJsonArray = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,55 +95,34 @@ public class NewsfeedActivity extends ListActivity implements SwipeRefreshLayout
 
             String url = "http://app.compsat.org/index.php/News_controller/news/format/json";
 
-            // Hashmap for ListView
-            notifsList = new ArrayList<HashMap<String, String>>();
-
-            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            RestClient newsRestClient = new RestClient(url);
 
             ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo activeNetworkInfo = cm.getActiveNetworkInfo();
 
-            JSONArray json = null;
             if(activeNetworkInfo != null && activeNetworkInfo.isConnected()){
                 // getting JSON string from URL
-                json = jParser.makeHttpRequest(url, "POST", params);
-                writeToFile(json.toString());
+                newsRestClient.execute();
+
+                if(newsRestClient.getStatusCode() == 200){
+
+                    newsfeedJsonArray = newsRestClient.getResponse();
+                    writeToFile(newsfeedJsonArray.toString());
+                }
+                else{
+                    try {
+                        newsfeedJsonArray = new JSONArray(readFromFile());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
             else{
                 try {
-                    json = new JSONArray(readFromFile());
+                    newsfeedJsonArray = new JSONArray(readFromFile());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            }
-
-            try {
-                // Getting Array of Contacts
-                notifications = json;
-
-                // looping through All Contacts
-                for (int i = 0; i < notifications.length(); i++) {
-                    JSONObject c = notifications.getJSONObject(i);
-
-                    // Storing each json item in variable
-                    String title = c.getString(TAG_TITLE);
-                    String message = c.getString(TAG_MESSAGE);
-                    String date = (String) c.get(TAG_DATE);
-
-
-                    // creating new HashMap
-                    HashMap<String, String> map = new HashMap<String, String>();
-
-                    // adding each child node to HashMap key => value
-                    map.put(TAG_TITLE, title);
-                    map.put(TAG_MESSAGE, message);
-                    map.put(TAG_DATE, date);
-
-                    // adding HashList to ArrayList
-                    notifsList.add(map);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
 
             return null;
@@ -166,7 +137,7 @@ public class NewsfeedActivity extends ListActivity implements SwipeRefreshLayout
             // updating UI from Background Thread
             runOnUiThread(new Runnable() {
                 public void run() {
-                    NewsfeedListAdapter adapter = new NewsfeedListAdapter(NewsfeedActivity.this, notifications);
+                    NewsfeedListAdapter adapter = new NewsfeedListAdapter(NewsfeedActivity.this, newsfeedJsonArray);
                     setListAdapter(adapter);
                     pDialog.dismiss();
                     swipeRefreshLayout.setRefreshing(false);

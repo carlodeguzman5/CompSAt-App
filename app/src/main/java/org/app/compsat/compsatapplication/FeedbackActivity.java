@@ -51,7 +51,6 @@ public class FeedbackActivity extends Activity {
         button = (Button) findViewById(R.id.feedbackBtn);
         button.setTypeface(tf);
 
-
     }
 
 
@@ -78,38 +77,15 @@ public class FeedbackActivity extends Activity {
     }
 
     public void submitFeedback(View view) throws JSONException {
-        new ExecutePost("http://app.compsat.org/index.php/Feedback_controller/feedback/format/json", subjectText.getText().toString(), feedbackText.getText().toString() ).execute();
-    }
-/*
-    class CompSAtAppClient{
-        public void sendFeedback(RequestParams params) throws JSONException {
-            CompSAtAppRestClient.post("Feedback_controller/feedback/format/json", params, new JsonHttpResponseHandler() {
-                @Override
-                public void onStart() {
-                    // called before request is started
-                    Log.d("START", "WOOH");
-                }
-
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                    // If the response is JSONObject instead of expected JSONArray
-                    Log.d("SUCCESS", "YEHEY");
-                }
-
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                    // Pull out the first event on the public timeline
-                    Log.d("SUCCESS", "YEHEY");
-                }
-                @Override
-                public void onFailure(int statusCode, Header[] headers, String response, Throwable throwable){
-                    Log.e("Exception", throwable.getStackTrace().toString());
-                    Log.d("TEST", "ERROR");
-                }
-
-            });
+        if(String.valueOf(subjectText.getText()).trim().equals("") ||
+                String.valueOf(feedbackText.getText()).trim().equals("") ){
+            Toast.makeText(this, "Oops, you forgot something", Toast.LENGTH_SHORT).show();
         }
-    }*/
+        else{
+            new ExecutePost("http://app.compsat.org/index.php/Feedback_controller/feedback/format/json", String.valueOf(subjectText.getText()), String.valueOf(feedbackText.getText()) ).execute();
+        }
+
+    }
 
     public class ExecutePost extends AsyncTask<String, String, String> {
 
@@ -169,20 +145,6 @@ public class FeedbackActivity extends Activity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
-            /*
-            // 1. Instantiate an AlertDialog.Builder with its constructor
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-
-            // 2. Chain together various setter methods to set the dialog characteristics
-            builder.setMessage("Your Feedback has been sent!")
-                    .setTitle("Success").setNeutralButton("Dismiss", null);
-
-            // 3. Get the AlertDialog from create()
-            AlertDialog dialog = builder.create();
-
-            dialog.show();
-            */
-
             Toast.makeText(context, "Feedback has been submitted!", Toast.LENGTH_LONG).show();
 
             feedbackText.setText("");
@@ -197,29 +159,4 @@ public class FeedbackActivity extends Activity {
         intent.addCategory(Intent.CATEGORY_HOME);
         startActivity(intent);
     }
-/*
-    static class CompSAtAppRestClient {
-        private static final String BASE_URL = "http://app.compsat.org/index.php/";
-
-        private static AsyncHttpClient client = new AsyncHttpClient();
-
-        public static void get(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-            client.get(getAbsoluteUrl(url), params, responseHandler);
-        }
-
-        public static void post(String url, RequestParams params, AsyncHttpResponseHandler responseHandler) {
-            StringEntity entity = null;
-            try {
-                entity = new StringEntity(params.toString());
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-
-            client.post(null, getAbsoluteUrl(url), entity, "application/json", responseHandler);
-        }
-
-        private static String getAbsoluteUrl(String relativeUrl) {
-            return BASE_URL + relativeUrl;
-        }
-    }*/
 }
