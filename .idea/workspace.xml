@@ -47,11 +47,6 @@
   <component name="ChangeListManager">
     <list default="true" id="fce629c7-1d23-43e1-aa52-87b5f7097f7b" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/org/app/compsat/compsatapplication/CreateAccountActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/org/app/compsat/compsatapplication/CreateAccountActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/org/app/compsat/compsatapplication/FeedbackActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/org/app/compsat/compsatapplication/FeedbackActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/org/app/compsat/compsatapplication/LinksActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/org/app/compsat/compsatapplication/LinksActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/org/app/compsat/compsatapplication/LinksListAdapter.java" afterPath="$PROJECT_DIR$/app/src/main/java/org/app/compsat/compsatapplication/LinksListAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/org/app/compsat/compsatapplication/WebsiteActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/org/app/compsat/compsatapplication/WebsiteActivity.java" />
     </list>
     <ignored path="CompSAt Application.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -131,7 +126,7 @@
       <file leaf-file-name="MyRecyclerAdapter.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/org/app/compsat/compsatapplication/MyRecyclerAdapter.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.30706522">
+            <state vertical-scroll-proportion="0.20250896">
               <caret line="122" column="36" selection-start-line="122" selection-start-column="36" selection-end-line="122" selection-end-column="36" />
               <folding />
             </state>
@@ -2731,7 +2726,13 @@
       <option name="project" value="LOCAL" />
       <updated>1464434340932</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Feedback and Links altered to support RestClient&#10;WebsiteActivity navigates to pressed links instead of opening an external browser.&#10;">
+      <created>1464437144383</created>
+      <option name="number" value="00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1464437144383</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -2764,7 +2765,7 @@
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36177474" sideWeight="0.5181543" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32423207" sideWeight="0.48184568" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32423207" sideWeight="0.48184568" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.27685326" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21331058" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32879046" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -2813,7 +2814,8 @@
     <MESSAGE value="Added StickyHeaders Package" />
     <MESSAGE value="RestClient Altered for API 23&#10;" />
     <MESSAGE value="CreateAccountActivity altered to support RestClient&#10;" />
-    <option name="LAST_COMMIT_MESSAGE" value="CreateAccountActivity altered to support RestClient&#10;" />
+    <MESSAGE value="Feedback and Links altered to support RestClient&#10;WebsiteActivity navigates to pressed links instead of opening an external browser.&#10;" />
+    <option name="LAST_COMMIT_MESSAGE" value="Feedback and Links altered to support RestClient&#10;WebsiteActivity navigates to pressed links instead of opening an external browser.&#10;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -3242,7 +3244,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/org/app/compsat/compsatapplication/MyRecyclerAdapter.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.30706522">
+        <state vertical-scroll-proportion="0.20250896">
           <caret line="122" column="36" selection-start-line="122" selection-start-column="36" selection-end-line="122" selection-end-column="36" />
           <folding />
         </state>
