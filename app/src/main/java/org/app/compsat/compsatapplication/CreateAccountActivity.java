@@ -12,25 +12,8 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.protocol.HTTP;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 public class CreateAccountActivity extends Activity {
@@ -66,7 +49,6 @@ public class CreateAccountActivity extends Activity {
         Date date = new Date();
         birthdateInput.setMaxDate(date.getTime());
 
-
         Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/OpenSans-Regular.ttf");
         idInput.setTypeface(tf);
         nameInput.setTypeface(tf);
@@ -91,58 +73,37 @@ public class CreateAccountActivity extends Activity {
 
         @Override
         protected String doInBackground(String... params) {
-            HttpClient client = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost(url);
-            JSONObject json = new JSONObject();
-            try {
+            RestClient accountRestClient = new RestClient(url);
 
-                json.put("username", params[0]);
-                json.put("password", params[1]);
-                json.put("name", params[2]);
-                json.put("year", params[3]);
-                json.put("course", params[4]);
-                json.put("mobile", params[5]);
-                json.put("email", params[6]);
-                json.put("birthdate", params[7]);
+            accountRestClient.addParam("username", params[0]);
+            accountRestClient.addParam("password", params[1]);
+            accountRestClient.addParam("name", params[2]);
+            accountRestClient.addParam("year", params[3]);
+            accountRestClient.addParam("course", params[4]);
+            accountRestClient.addParam("mobile", params[5]);
+            accountRestClient.addParam("email", params[6]);
+            accountRestClient.addParam("birthdate", params[7]);
 
-                org.apache.http.entity.StringEntity se = new org.apache.http.entity.StringEntity(json.toString());
-                se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
-                httpPost.setEntity(se);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            int statusCode = 0;
-            try {
-                HttpResponse response = client.execute(httpPost);
-                //String responseBody = EntityUtils.toString(response.getEntity());
-                StatusLine statusLine = response.getStatusLine();
-                statusCode = statusLine.getStatusCode();
-                Log.d("STATUS", statusCode + "");
-            } catch (ClientProtocolException e) {
-                Log.d("STATUS", "ERROR");
-            } catch (IOException e) {
-                Log.d("STATUS", "ERROR");
-            }
-            return statusCode +"";
+            accountRestClient.execute();
+
+            return String.valueOf(accountRestClient.getStatusCode());
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            if(s.equals("200")){
-
-                Toast.makeText(context, "Account creation successful", Toast.LENGTH_LONG).show();
-                finish();
+            switch (s) {
+                case "200":
+                    Toast.makeText(context, "Account creation successful", Toast.LENGTH_LONG).show();
+                    finish();
+                    break;
+                case "404":
+                    Toast.makeText(context, "ID number is already registered", Toast.LENGTH_LONG).show();
+                    break;
+                case "500":
+                    Toast.makeText(context, "Internal Error", Toast.LENGTH_LONG).show();
+                    break;
             }
-            else if(s.equals("404")){
-                Toast.makeText(context, "ID number is already registered", Toast.LENGTH_LONG).show();
-            }
-            else if(s.equals("500")){
-                Toast.makeText(context, "Internal Error", Toast.LENGTH_LONG).show();
-            }
-
         }
     }
     public void createAccount(View view) {
