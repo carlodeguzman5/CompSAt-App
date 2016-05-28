@@ -34,14 +34,14 @@ class LinksListAdapter extends BaseAdapter implements ListAdapter {
 
 
     @Override public int getCount() {
-        if(null==jsonArray)
+        if(jsonArray == null)
             return 0;
         else
             return jsonArray.length();
     }
 
     @Override public JSONObject getItem(int position) {
-        if(null==jsonArray) return null;
+        if(jsonArray == null) return null;
         else
             return jsonArray.optJSONObject(position);
     }

@@ -6,22 +6,31 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
-
+import android.webkit.WebViewClient;
 
 public class WebsiteActivity extends Activity{
+    WebView webview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web);
 
-
-        WebView webview = (WebView) findViewById(R.id.webView);
+        webview = (WebView) findViewById(R.id.webView);
         webview.loadUrl(getIntent().getExtras().getString("url"));
         webview.getSettings().setLoadWithOverviewMode(true);
         webview.getSettings().setUseWideViewPort(true);
         webview.getSettings().setBuiltInZoomControls(true);
         webview.getSettings().setJavaScriptEnabled(true);
+
+        webview.setWebViewClient(new WebViewClient(){
+            public boolean shouldOverrideUrlLoading(WebView view, String url){
+                // do your handling codes here, which url is the requested url
+                // probably you need to open that url rather than redirect:
+                view.loadUrl(url);
+                return false; // then it is not handled by default action
+            }
+        });
     }
 
 
@@ -37,14 +46,21 @@ public class WebsiteActivity extends Activity{
         switch (item.getItemId()) {
             case android.R.id.home:
                 // app icon in action bar clicked; goto parent activity.
-                this.finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if(webview.canGoBack()){
+            webview.goBack();
+        }
+        else super.onBackPressed();
+    }
+
     public void back(View view){
-        onBackPressed();
+        super.onBackPressed();
     }
 }

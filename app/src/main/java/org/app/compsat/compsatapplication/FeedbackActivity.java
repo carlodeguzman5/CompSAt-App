@@ -1,6 +1,5 @@
 package org.app.compsat.compsatapplication;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,27 +13,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.protocol.HTTP;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-
 
 public class FeedbackActivity extends Activity {
 
     private Context context = this;
     private EditText feedbackText, subjectText;
-    private Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +32,7 @@ public class FeedbackActivity extends Activity {
         subjectText = (EditText) findViewById(R.id.subjectText);
         subjectText.setTypeface(tf);
 
-        button = (Button) findViewById(R.id.feedbackBtn);
+        Button button = (Button) findViewById(R.id.feedbackBtn);
         button.setTypeface(tf);
 
     }
@@ -98,57 +82,40 @@ public class FeedbackActivity extends Activity {
 
         @Override
         protected String doInBackground(String... params) {
-            StringBuilder builder = new StringBuilder();
-            HttpClient client = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost(url);
-            JSONObject json = new JSONObject();
-            try {
-                SharedPreferences prefs = getSharedPreferences(
-                        "org.app.compsat.compsatapplication", Context.MODE_PRIVATE);
+            SharedPreferences prefs = getSharedPreferences(
+                    "org.app.compsat.compsatapplication", Context.MODE_PRIVATE);
 
-                json.put("subject", subject);
-                json.put("feedback", feedback);
-                json.put("name", prefs.getString("name", ""));
-                org.apache.http.entity.StringEntity se = new org.apache.http.entity.StringEntity( json.toString());
-                se.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
-                httpPost.setEntity(se);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+            RestClient feedbackRestClient = new RestClient(url);
+            feedbackRestClient.addParam("subject", subject);
+            feedbackRestClient.addParam("feedback", feedback);
+            feedbackRestClient.addParam("name", prefs.getString("name", ""));
+            feedbackRestClient.execute();
 
-            try {
-                HttpResponse response = client.execute(httpPost);
-                String responseBody = EntityUtils.toString(response.getEntity());
-                StatusLine statusLine = response.getStatusLine();
-                int statusCode = statusLine.getStatusCode();
-                if(statusCode == 200){
-                    JSONArray jsonObject =  new JSONArray(responseBody);
-
-                } else if(statusCode == 500) {
-                    Toast.makeText(context, "Internal Error", Toast.LENGTH_LONG).show();
-                } else{
-                    Log.d("STATUS", statusCode+"");
-                }
-            }catch(ClientProtocolException e){
-                Log.d("STATUS", "ERROR");
-            } catch (IOException e){
-                Log.d("STATUS", "ERROR");
-            } catch (JSONException e) {
-                Log.d("STATUS", "ERROR");
-            }
-            return builder.toString();
+            return String.valueOf(feedbackRestClient.getStatusCode());
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
-            Toast.makeText(context, "Feedback has been submitted!", Toast.LENGTH_LONG).show();
+            switch (s){
+                case "200":
+                    Toast.makeText(context, "Feedback has been submitted!", Toast.LENGTH_LONG).show();
 
-            feedbackText.setText("");
-            subjectText.setText("");
+                    feedbackText.setText("");
+                    subjectText.setText("");
+                    break;
+
+                case "500":
+                    Toast.makeText(context, "Internal Error", Toast.LENGTH_LONG).show();
+                    break;
+
+                default:
+                    Log.d("STATUS", s);
+                    break;
+
+            }
+
 
         }
     }
